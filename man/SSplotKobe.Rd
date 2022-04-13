@@ -7,6 +7,7 @@
 SSplotKobe(
   kb,
   joint = TRUE,
+  trajectory = TRUE,
   year = NULL,
   posterior = c("points", "kernel"),
   xlab = expression(SSB/SSB[MSY]),
@@ -27,6 +28,8 @@ SSplotKobe(
 \item{kb}{output from SSdeltaMVLN()$kb}
 
 \item{joint}{option FALSE shows individual runs}
+
+\item{trajectory}{show median trajectory, default is TRUE}
 
 \item{year}{option to choose year for kobe, last year is default}
 

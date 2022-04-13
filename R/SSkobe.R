@@ -4,6 +4,7 @@
 #'
 #' @param kb output from SSdeltaMVLN()$kb
 #' @param joint option FALSE shows individual runs
+#' @param trajectory show median trajectory, default is TRUE
 #' @param year option to choose year for kobe, last year is default
 #' @param posterior visualization of posterior c("points","kernel")
 #' @param xlab graphic parameter
@@ -29,7 +30,7 @@
 #' @importFrom graphics text
 #' @importFrom stats median
 
-SSplotKobe <- function(kb, joint = TRUE, year = NULL,
+SSplotKobe <- function(kb, joint = TRUE, trajectory = TRUE, year = NULL,
                        posterior = c("points", "kernel"),
                        xlab = expression(SSB / SSB[MSY]), ylab = expression(F / F[MSY]), ylim = NULL,
                        xlim = NULL, fill = TRUE, legend = TRUE, legendpos = "right", legendcex = 0.7,
@@ -71,28 +72,43 @@ SSplotKobe <- function(kb, joint = TRUE, year = NULL,
 
   # MVN posterior
   if (n > 1 & joint == FALSE) {
-    if (posterior[1] == "points") for (i in 1:n) points(kb$stock[kb$run == r[i]], kb$harvest[kb$run == r[i]], col = r4ss::rich.colors.short(n, 0.3)[i], pch = 16, cex = 0.8)
-    for (i in 1:n) points(median(kb$stock[kb$run == r[i]]), median(kb$harvest[kb$run == r[i]]), bg = r4ss::rich.colors.short(n, 1)[i], pch = 21, cex = 1.5, col = 1)
+    if (posterior[1] == "points"){ 
+      for (i in 1:n){ 
+        points(kb$stock[kb$run == r[i]], kb$harvest[kb$run == r[i]], 
+               col = r4ss::rich.colors.short(n, 0.3)[i], 
+               pch = 16, cex = 0.8)
+      }
+    }
+    for (i in 1:n){ 
+      points(median(kb$stock[kb$run == r[i]]), median(kb$harvest[kb$run == r[i]]), 
+             bg = r4ss::rich.colors.short(n, 1)[i], pch = 21, cex = 1.5, col = 1)
+    }
   } else {
     if (posterior[1] == "points") points(kb$stock, kb$harvest, bg = grey(0.6, 0.8), pch = 21)
   }
-  lines(trj$stock, trj$harvest, lwd = 2)
-
-  if (yr.label) {
-    showyr <- unique(yr.int * floor(trj$year / yr.int))
-    for (i in 1:length(trj$year)) {
-      if (trj$year[i] %in% showyr) {
-        points(trj$stock[i], trj$harvest[i], pch = 21, bg = "white", cex = 1)
-        text(trj$stock[i] - 0.05, trj$harvest[i] - 0.07, as.character(trj$year[i]), cex = 0.8, col = "blue")
+  
+  if(trajectory == TRUE){
+    
+    lines(trj$stock, trj$harvest, lwd = 2)
+    
+    if (yr.label) {
+      showyr <- unique(yr.int * floor(trj$year / yr.int))
+      for (i in 1:length(trj$year)) {
+        if (trj$year[i] %in% showyr) {
+          points(trj$stock[i], trj$harvest[i], pch = 21, bg = "white", cex = 1)
+          text(trj$stock[i] - 0.05, trj$harvest[i] - 0.07, as.character(trj$year[i]), cex = 0.8, col = "blue")
+        }
       }
     }
+    points(median(kb$stock), median(kb$harvest), bg = 0, pch = 21, cex = 2, lwd = 2)
+    points(trj$stock[1], trj$harvest[1], bg = 0, pch = 21, cex = 1.7, lwd = 2)
+    
   }
-  points(median(kb$stock), median(kb$harvest), bg = 0, pch = 21, cex = 2, lwd = 2)
-  points(trj$stock[1], trj$harvest[1], bg = 0, pch = 21, cex = 1.7, lwd = 2)
+
   if (legendruns & joint == F) {
     legend("topright", paste(r), bty = "n", cex = 0.8, pch = 21, pt.bg = r4ss::rich.colors.short(n, 1), col = 1, pt.cex = 1.5)
   }
-  # Get Propability
+  # Get Probability
   b <- kb$stock
   f <- kb$harvest
   Pr.green <- sum(ifelse(b > 1 & f < 1, 1, 0)) / length(b) * 100
@@ -114,4 +130,4 @@ SSplotKobe <- function(kb, joint = TRUE, year = NULL,
     return(out)
   }
 } # end
-# }}}
+
