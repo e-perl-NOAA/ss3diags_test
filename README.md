@@ -19,7 +19,7 @@ Integrated Stock Assessments’.
 
 A handbook with detailed [User guidelines for Advanced Model Diagnostics
 with
-ss3diags](https://github.com/jabbamodel/ss3diags/blob/master/Vignette/ss3diags_handbook.pdf)
+ss3diags](https://github.com/PIFSCstockassessments/ss3diags/tree/main/Vignette/ss3diags_handbook.html)
 is currently being finalized.
 
 In addition, the ss3diags Github respository provides fully commented
